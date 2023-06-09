@@ -1,0 +1,64 @@
+trigger:
+ branches:
+  include:
+    - main
+ paths:
+   exclude:
+     - pipelines
+
+name: Deploy Simple Logic App to Existing Function App - $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)-$(Hours)$(Minutes)$(Seconds)   
+
+variables:
+  vmImageName: 'ubuntu-latest'
+  devAzureServiceConnection: 'russ-airs'
+  testAzureServiceConnection: 'russ-airs'
+  prodAzureServiceConnection: 'russ-airs'
+  location: 'uksouth'
+  resourceGroupName: 'rg-simple-cicd'
+  logicAppName: 'logicapp-hello-world-'
+
+stages:
+- stage: 'dev_deploy'
+  displayName: 'Deploy to Dev Environment Stage'
+  jobs:
+  - deployment: 'dev_deploy_workflow'
+    displayName: 'Deploy Workflow to Dev Environment Deployment'
+    pool:
+      vmImage: $(vmImageName)
+    environment: 
+      name: 'dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+
+          - task: CopyFiles@2
+            displayName: 'Copy Logic App Files to logic-app'
+            inputs:
+              SourceFolder: '$(System.DefaultWorkingDirectory)'
+              Contents: |
+                logicapps/host.json
+                logicapps/connections.json
+                logicapps/parameters.json
+                logicapps/Artifacts/**/*
+                logicapps/hello-world/**
+              TargetFolder: 'logic-app'
+
+          - task: ArchiveFiles@2
+            displayName: 'Create workflows ZIP'
+            inputs: 
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/logic-app'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/logic-app/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+
+          - task: AzureFunctionApp@1
+            displayName: 'Deploy workflows to Function App'
+            inputs:
+              azureSubscription: $(devAzureServiceConnection)
+              appName: '$(logicAppName)-dev'
+              appType: 'workflowapp'
+              package: '$(Build.ArtifactStagingDirectory)/logic-app/$(Build.BuildId).zip'
+              deploymentMethod: 'zipDeploy'
