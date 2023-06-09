@@ -40,9 +40,8 @@ stages:
               Contents: |
                 logicapps/host.json
                 logicapps/connections.json
-                logicapps/parameters.json
                 logicapps/Artifacts/**/*
-                logicapps/hello-world/**
+                logicapps/hello-world/workflow.json
               TargetFolder: 'logic-app'
 
           - task: ArchiveFiles@2
