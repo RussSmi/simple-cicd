@@ -98,6 +98,10 @@ resource siteLogicApp 'Microsoft.Web/sites@2021-02-01' = {
           name: 'WORKFLOWS_RESOURCE_GROUP_NAME'
           value: resourceGroup().name
         }
+        {
+          name: 'WEBSITE_RUN_FROM_PACKAGE'
+          value: '1'
+        }
       ]
       use32BitWorkerProcess: true
     }
