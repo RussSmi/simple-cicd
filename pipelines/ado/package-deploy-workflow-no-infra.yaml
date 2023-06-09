@@ -15,7 +15,7 @@ variables:
   prodAzureServiceConnection: 'russ-airs'
   location: 'uksouth'
   resourceGroupName: 'rg-simple-cicd'
-  logicAppName: 'logicapp-hello-world-'
+  logicAppName: 'logicapp-hello-world'
 
 stages:
 - stage: 'dev_deploy'
