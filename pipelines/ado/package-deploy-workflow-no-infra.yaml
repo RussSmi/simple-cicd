@@ -36,7 +36,7 @@ stages:
           - task: CopyFiles@2
             displayName: 'Copy Logic App Files to logic-app'
             inputs:
-              SourceFolder: '$(System.DefaultWorkingDirectory)logicapps'
+              SourceFolder: '$(System.DefaultWorkingDirectory)/logicapps'
               Contents: |
                 host.json
                 connections.json
