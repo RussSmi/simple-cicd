@@ -36,12 +36,12 @@ stages:
           - task: CopyFiles@2
             displayName: 'Copy Logic App Files to logic-app'
             inputs:
-              SourceFolder: '$(System.DefaultWorkingDirectory)'
+              SourceFolder: '$(System.DefaultWorkingDirectory)logicapps'
               Contents: |
-                logicapps/host.json
-                logicapps/connections.json
-                logicapps/Artifacts/**/*
-                logicapps/hello-world/workflow.json
+                host.json
+                connections.json
+                Artifacts/**/*
+                hello-world/*
               TargetFolder: 'logic-app'
 
           - task: ArchiveFiles@2
